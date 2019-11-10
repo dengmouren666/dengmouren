@@ -1,0 +1,143 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct link *tianjia(struct link *head);
+struct link *shanchu1(struct link *head,int n);
+struct link *shanchu2(struct link *head,int n);
+struct link *nixu(struct link *head);
+void xianshi(struct link *head);
+void qingkong(struct link *head);
+struct link{
+    int data;
+    struct link *next;
+};
+int main(void){
+    int i=0,n;
+    char c;
+    struct link *head = NULL;
+    printf("你想干嘛?\n");
+    printf("/'y'/=添加一个新节点");
+    scanf(" %c",&c);
+    while(c=='Y'||c=='y'){
+        head = tianjia(head);
+        xianshi(head);
+        printf("你还想添加一个新节点吗(Y/N)?");
+        scanf(" %c",&c);
+        i++;
+    }
+    printf("输入n表示删倒数第几个节点，输入N表示删第几个节点,输入o表示将链表逆序输出");
+    scanf(" %c",&c);
+    if(c=='n'){
+        printf("你想删除倒数第几个节点?");
+        scanf("%d",&n);
+        head=shanchu1(head,n);
+        xianshi(head);
+    }
+    else if(c=='N'){
+        printf("你想删除第几个节点？");
+        scanf("%d",&n);
+        head=shanchu2(head,n);
+        xianshi(head);
+    }
+    else if(c=='o'){
+        head=nixu(head);
+        xianshi(head);
+    }
+    printf("%d 个新节点被添加 ! \n",i-1);
+    qingkong(head);
+}
+struct link *tianjia(struct link *head){
+    struct link *p=NULL,*pr=head;
+    int data;
+    p=(struct link*)malloc(sizeof(struct link));
+    if(p==NULL){
+        printf("空间分配失败!\n");
+        exit(0);
+    }
+    if(head==NULL){
+        head=p;
+    }
+    else{
+        while(pr->next!=NULL){
+            pr=pr->next;
+        }
+        pr->next=p;
+    }
+    printf("输入节点数据域");
+    scanf("%d",&data);
+    p->data=data;
+    p->next=NULL;
+    return head;
+}
+void xianshi(struct link *head){
+    struct link *p=head;
+    int j=1;
+    while(p!=NULL){
+        printf("%5d%10d\n",j,p->data);
+        p=p->next;
+        j++;
+    }
+}
+void qingkong(struct link *head){
+    struct link *p=head,*pr=NULL;
+    while(p!=NULL){
+        pr=p;
+        p=p->next;
+        free(pr);
+    }
+}
+struct link *shanchu1(struct link *head,int n){//删除倒数第n个链表
+    struct link *p=head;
+    struct link *q=head;
+    int len=1;
+    while(q->next){
+        q=q->next;
+        len++;
+    }
+    for(int i=1;i<len-n;i++){
+        p=p->next;
+    }
+    if(len==1) return NULL;
+    else{
+        if((len-n)==0) return head->next;
+        else{
+            q=p->next;
+            p->next=q->next;
+            return head;
+        }
+    }
+    
+}
+struct link *shanchu2(struct link *head,int n){
+    struct link *p=head,*q=head;
+    int len=1;
+    while(q->next){
+        q=q->next;
+        len++;
+    }
+    if(n>len){
+        printf("你瞎了吗？");
+        exit(0);
+    }
+    else{
+        for(int i=1;i<n-1;i++){
+            p=p->next;
+        }
+        p->next=p->next->next;
+    }
+    return head;
+}
+struct link *nixu(struct link *head){
+    if(head==NULL){
+        return head;
+    }
+    struct link *pre=NULL;
+    struct link *cur=head;
+    struct link *t;
+    while(cur){
+        t=cur->next;
+        cur->next=pre;
+        pre=cur;
+        cur=t;
+    }
+    return pre;
+}
